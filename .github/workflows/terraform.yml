@@ -1,5 +1,5 @@
-name: "vprofile IAC"
-on: 
+name: "Vprofile IAC"
+on:
   push:
     branches:
       - main
@@ -14,17 +14,16 @@ on:
 
 # the following data exists in GitHub secrets, I access it via keys
 env:
-  # Credentials for AWS deploy
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+ # Credentials for deployment to AWS
+ AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+ AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+ # S3 bucket for the Terraform state
+ BUCKET_TF_STATE: ${{ secrets.BUCKET_TF_STATE}}
+ AWS_REGION: us-east-2
+ EKS_CLUSTER: vprofile-eks # same as in the variables.tf
 
-  # S3 bucket with Terraform state
-  BUCKET_TF_STATE: ${{ secrets.BUCKET_TF_STATE }}
-  AWS_REGION: us-east-2
-  EKS_CLUSTER: vprofile-eks # same as in the variables.tf
-
-jobs: 
-    terraform:
+jobs:
+   terraform:
       name: "Apply terraform code changes"
       # Creates container from ubuntu image
       runs-on: ubuntu-latest 
@@ -62,5 +61,5 @@ jobs:
           continue-on-error: true # will handle other way
 
         - name: Terraform plan status
-          if: steps.plan.outcome == "failure"
+          if: steps.plan.outcome == 'failure' 
           run: exit 1
